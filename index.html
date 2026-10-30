@@ -1,6 +1,253 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="public"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تسجيل الدخول · طلاب الفرقة الأولى</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Geist:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="assets/css/style.css"></head>
-<body><main class="login"><div class="auth-card"><img src="WEB/111.jpg" alt="شعار الموقع"><h1>طلاب الفرقة الأولى</h1><p class="muted">كلية أصول الدين والدعوة بالزقازيق · مساحة طلابية وليست الموقع الرسمي للكلية</p>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلاب الفرقة الأولى</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Geist:wght@400;500;600;700&display=swap">
+<style>
+:root{--canvas:#fff;--surface:#f6f6f6;--fg:#111;--muted:#5c5c5c;--accent2:#3d3d3d;--divider:#e2e2e2;--radius:16px;--green:#149343;
+--display:"Amiri","Cairo",serif;--body:"Geist","Cairo",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html:not([data-auth]) body{visibility:hidden}
+[hidden]{display:none!important}
+html[data-auth=in] #login{display:none}
+html[data-auth=out] #app{display:none}
+body{font-family:var(--body);background:var(--canvas);color:var(--fg);line-height:1.8;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,.post-body,.bubble p,.bubble .nm{font-family:var(--display)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}.muted{color:var(--muted)}
+header.site{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--divider)}
+.site-inner{display:flex;align-items:center;gap:16px;height:72px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand img{width:44px;height:44px;border-radius:12px;object-fit:cover}
+.brand-name{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.3}
+.brand-sub{font-size:11.5px;color:var(--muted);line-height:1.3}
+.icon-btn{margin-inline-start:auto;width:44px;height:44px;border-radius:12px;border:1px solid var(--divider);background:var(--canvas);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:var(--fg)}
+.icon-btn:hover{background:var(--surface)}
+.nav-check{position:absolute;opacity:0;pointer-events:none}
+.drawer{position:fixed;inset-block:0;inset-inline-start:0;width:300px;max-width:86vw;z-index:60;background:var(--canvas);border-inline-end:1px solid var(--divider);transform:translateX(105%);transition:transform .22s ease;display:flex;flex-direction:column;padding:24px 20px;overflow-y:auto}
+.nav-check:checked~.drawer{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;gap:12px;padding:4px 8px 20px;border-bottom:1px solid var(--divider);margin-bottom:16px;font-family:var(--display);font-weight:700;font-size:19px}
+.drawer-head label{margin-inline-start:auto;cursor:pointer;font-size:20px}
+.drawer nav{display:flex;flex-direction:column;gap:2px}
+.drawer nav a{padding:11px 14px;border-radius:12px;font-weight:600;font-size:16px}
+.drawer nav a:hover{background:var(--surface)}.drawer nav a.current{background:var(--fg);color:#fff}
+.drawer-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--divider)}
+.scrim{position:fixed;inset:0;background:rgba(17,17,17,.32);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
+.nav-check:checked~.scrim{opacity:1;pointer-events:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;border-radius:14px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-dark{background:var(--fg);color:#fff}.btn-dark:hover{background:var(--accent2)}
+.btn-ghost{background:var(--canvas);color:var(--fg);border-color:var(--divider)}.btn-ghost:hover{background:var(--surface)}
+.btn-sm{height:38px;padding:0 16px;font-size:13.5px;border-radius:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;border:1px solid var(--divider);font-size:12px;font-weight:600;background:var(--surface);color:var(--muted)}
+section.block{padding:56px 0;border-bottom:1px solid var(--divider)}
+.sec-head{margin-bottom:32px}.sec-head h1,.sec-head h2{font-size:38px;font-weight:700;line-height:1.35}
+.sec-sub{color:var(--muted);max-width:60ch;margin-top:8px}
+.card,.post{background:var(--canvas);border:1px solid var(--divider);border-radius:var(--radius);padding:26px;margin-bottom:20px}
+.card.lift{box-shadow:0 1px 2px rgba(17,17,17,.04)}
+.post h3{font-size:25px;font-weight:700;line-height:1.5;margin-bottom:8px}
+.post-body{font-size:19px;line-height:1.95;white-space:pre-line;margin-bottom:16px}
+.post .tm{font-size:12.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.atts{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--divider);padding-top:14px}
+.post.featured{border-color:var(--green);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(20,147,67,.35)}50%{box-shadow:0 0 0 9px rgba(20,147,67,0)}}
+@media(prefers-reduced-motion:reduce){.post.featured{animation:none;box-shadow:0 0 0 3px rgba(20,147,67,.25)}}
+.wa{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--surface)}
+.wa h3{font-size:22px}
+.empty{border:1px dashed #cfcfcf;border-radius:var(--radius);padding:44px 24px;text-align:center;color:var(--muted)}
+.composer{display:flex;gap:12px;align-items:flex-start;margin-bottom:24px}
+.composer textarea,.field input{flex:1;width:100%;min-height:52px;border:1px solid var(--divider);border-radius:14px;padding:13px 16px;font-family:var(--display);font-size:18px;resize:vertical;background:var(--canvas);color:var(--fg)}
+.field input{min-height:50px;font-family:var(--body);font-size:15px}
+.composer textarea:focus,.field input:focus{outline:2px solid var(--fg);outline-offset:-1px}
+.comment{margin-bottom:14px}
+.comment .bubble{background:var(--surface);border-radius:16px;padding:14px 18px}
+.comment .bubble .nm{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.comment .tm{font-family:var(--body);font-weight:400;color:var(--muted);font-size:11.5px}
+.comment .bubble p{font-size:18px;line-height:1.85;margin-top:2px;white-space:pre-line;overflow-wrap:anywhere}
+.cact{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.cact button{font-size:12.5px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:8px;font-family:var(--body)}
+.cact button:hover{background:var(--canvas);color:var(--fg)}.cact button.on{color:var(--fg);background:var(--canvas);outline:1px solid var(--divider)}
+.replies{margin-inline-start:28px;margin-top:10px;padding-inline-start:14px;border-inline-start:2px solid var(--divider)}
+.about h2{font-size:28px;margin:28px 0 12px}.about p{font-size:19px;font-family:var(--display);line-height:2;margin-bottom:14px}
+.blue{color:#1558d6;font-weight:700}.blue:hover{text-decoration:underline}
+.about ul{list-style:none;display:grid;gap:12px}.about li{border:1px solid var(--divider);border-radius:var(--radius);padding:16px 20px;font-family:var(--display);font-size:18px;background:var(--surface)}
+.about li b{display:block;font-size:20px}
+.logos{display:flex;gap:16px;margin:28px 0}.logos img{flex:1;min-width:0;max-width:50%;border:1px solid var(--divider);border-radius:20px;padding:10px;background:#fff}
+.note{border:1px solid var(--divider);border-radius:var(--radius);padding:18px 22px;background:var(--surface);font-family:var(--display);font-size:18px}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{width:100%;max-width:440px;border:1px solid var(--divider);border-radius:24px;padding:32px 28px;background:var(--surface);text-align:center}
+.auth-card img{width:120px;height:120px;border-radius:50%;margin:0 auto 14px;object-fit:cover}
+.auth-card h1{font-size:30px;line-height:1.5;margin-bottom:6px}
+.auth-btn{display:flex;align-items:center;gap:14px;height:58px;padding:0 20px;border-radius:16px;border:1px solid var(--divider);background:var(--canvas);font-weight:700;font-size:15.5px;cursor:pointer;font-family:inherit;width:100%;margin-top:12px}
+.auth-btn:hover{background:var(--surface);border-color:#cfcfcf}
+.auth-btn.main{border-color:var(--fg);border-width:2px}
+.auth-btn .g{width:28px;height:28px;border-radius:50%;background:var(--fg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.auth-btn .chip{margin-inline-start:auto}
+.or{margin:20px 0 6px;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:12px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--divider)}
+.field{margin-top:10px;text-align:right}.field input{direction:ltr;text-align:left}
+.msg{margin-top:12px;font-size:13.5px;min-height:20px;color:#b3261e}
+.hidden{display:none!important}
+footer.site{padding:44px 0 36px;color:var(--muted);font-size:13.5px}
+footer .frow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+@media(max-width:700px){.wrap{padding:0 18px}.sec-head h1,.sec-head h2{font-size:30px}.brand-sub{display:none}.logos{gap:10px}}
+
+/* تعطيل تأثير النبض في بطاقات الصفحة الرئيسية */
+#v-home .post,#v-home .post *{animation:none!important}
+
+</style></head>
+<body data-mode="home">
+
+<!-- ============ صفحة تسجيل الدخول ============ -->
+<main class="login" id="login"><div class="auth-card"><img src="WEB/111.jpg" alt="شعار الموقع"><h1>طلاب الفرقة الأولى</h1><p class="muted">كلية أصول الدين والدعوة بالزقازيق · مساحة طلابية وليست الموقع الرسمي للكلية</p>
 <button id="google" class="auth-btn main"><span class="g">G</span>الدخول بحساب Google</button>
 <div id="msg" class="msg" role="alert"></div></div></main>
-<script type="module" src="assets/js/login.js"></script></body></html>
+
+<!-- ============ التطبيق (بعد تسجيل الدخول) ============ -->
+<div id="app">
+<input type="checkbox" id="nav" class="nav-check">
+<header class="site"><div class="wrap site-inner"><a class="brand" href="#home"><img src="WEB/111.jpg" alt="شعار الموقع"><div><div class="brand-name">طلاب الفرقة الأولى</div><div class="brand-sub">أصول الدين والدعوة · الزقازيق</div></div></a><label for="nav" class="icon-btn" aria-label="القائمة">☰</label></div></header>
+<aside class="drawer"><div class="drawer-head">القائمة<label for="nav">✕</label></div><nav><a href="#home" data-page="home">الرئيسية</a><a href="#forum" data-page="forum">منتدى الطلاب</a><a href="#about" data-page="about">عن الكلية</a><a href="#posts" data-page="posts">منشورات</a><a href="#lectures" data-page="lectures">محاضرات</a></nav><div class="drawer-foot"><button class="btn btn-ghost btn-sm" data-logout>تسجيل الخروج</button></div></aside>
+<label for="nav" class="scrim"></label>
+
+<main>
+<!-- الرئيسية -->
+<section class="block" id="v-home"><div class="wrap"><div class="sec-head"><h1>أهلًا بطلاب الفرقة الأولى</h1><p class="sec-sub">مساحة طلابية لأحدث المنشورات والمحاضرات والنقاش بين الطلاب.</p></div><div class="about home-about"><p><a class="blue" href="https://www.facebook.com/osoolzagazik" target="_blank" rel="noopener">كلية أصول الدين والدعوة بالزقازيق</a></p>
+<p>تأسست كلية أصول الدين والدعوة بالزقازيق في ثمانينيات القرن العشرين، وكان للدكتور أحمد عمر هاشم دور بارز في نشأتها وتأسيسها. وتهدف إلى إعداد خريجين يمتلكون المعرفة الشرعية والمنهج العلمي الذي يساعدهم على الدعوة إلى الله بالحكمة والموعظة الحسنة، والمشاركة في البحث العلمي والتوعية الدينية.</p>
+<div class="logos"><img src="WEB/222.jpg" alt="شعار جامعة الأزهر"><img src="WEB/333.jpg" alt="شعار الكلية"></div></div><div id="posts-home"><article class="post card"><div class="post-date">تاريخ الإضافة: يوم الجمعة الموافق 30 أكتوبر 2026</div><h3 class="post-title">ملخص كتاب اللغة العربية – أصول الدين</h3><a class="btn btn-sm" href="https://drive.google.com/file/d/1dTr_MnVhVpnKx4KzcKB6ZexXr4zCfcET/view?usp=drivesdk" target="_blank" rel="noopener">تحميل الآن</a></article></div><a class="btn btn-ghost" href="#posts">كل المنشورات</a></div></section>
+
+<!-- المنتدى -->
+<section class="block" id="v-forum"><div class="wrap"><div class="sec-head"><h1>منتدى الطلاب</h1><p class="sec-sub">اكتب تعليقك، وتفاعل مع زملائك بالإعجاب أو الرد.</p></div><div class="composer"><textarea id="txt" maxlength="1000" placeholder="اكتب تعليقًا…"></textarea><button id="send" class="btn btn-dark">نشر</button></div><div id="list"></div></div></section>
+
+<!-- عن الكلية -->
+<section class="block" id="v-about"><div class="wrap"><div class="sec-head"><h1>عن الكلية</h1></div><div class="about"><p><a class="blue" href="https://www.facebook.com/osoolzagazik" target="_blank" rel="noopener">كلية أصول الدين والدعوة بالزقازيق</a></p>
+<p>تأسست كلية أصول الدين والدعوة بالزقازيق في ثمانينيات القرن العشرين، وكان للدكتور أحمد عمر هاشم دور بارز في نشأتها وتأسيسها. وتهدف إلى إعداد خريجين يمتلكون المعرفة الشرعية والمنهج العلمي الذي يساعدهم على الدعوة إلى الله بالحكمة والموعظة الحسنة، والمشاركة في البحث العلمي والتوعية الدينية.</p>
+<div class="logos"><img src="WEB/222.jpg" alt="شعار جامعة الأزهر"><img src="WEB/333.jpg" alt="شعار الكلية"></div>
+<h2>الأقسام العلمية بالكلية</h2><ul>
+<li><b>قسم التفسير وعلوم القرآن</b>يهتم بدراسة القرآن الكريم وعلومه ومناهج تفسيره.</li>
+<li><b>قسم الحديث وعلومه</b>يُعنى بدراسة السنة النبوية وعلوم الحديث ومناهج فهمه.</li>
+<li><b>قسم العقيدة والفلسفة</b>يهتم بدراسة العقيدة الإسلامية والقضايا الفكرية والفلسفية.</li>
+<li><b>قسم الدعوة والثقافة الإسلامية</b>يركز على مناهج الدعوة الإسلامية والثقافة والتوعية الدينية.</li></ul>
+<p style="margin-top:22px">وتبدأ الدراسة بمرحلة عامة يتعرف فيها الطلاب على العلوم الأساسية، ثم يتجهون إلى التخصص وفق نظام الكلية. وقد أعلنت الكلية حصولها على اعتماد الهيئة القومية لضمان جودة التعليم والاعتماد عام 2023.</p>
+<div class="note">وهذا الموقع من تصميم طالب من الكلية ..<br>وهو ليس الموقع الرسمي للكلية انما مساحة طلابية ليجمع بين المهارات بين الطلاب وبعضهم البعض</div></div></div></section>
+
+<!-- المنشورات -->
+<section class="block" id="v-posts"><div class="wrap"><div class="sec-head"><h1>المنشورات</h1></div><div id="posts-posts">
+<!-- ===== لإضافة منشور جديد: انسخ البطاقة التالية والصقها في أول القائمة وغيّر التاريخ والعنوان ورابط جوجل درايف =====
+<article class="post card"><div class="post-date">تاريخ الإضافة: ...</div><h3 class="post-title">عنوان المنشور</h3><a class="btn btn-sm" href="رابط جوجل درايف" target="_blank" rel="noopener">تحميل الآن</a></article>
+-->
+<article class="post card"><div class="post-date">تاريخ الإضافة: يوم الجمعة الموافق 30 أكتوبر 2026</div><h3 class="post-title">ملخص كتاب اللغة العربية – أصول الدين</h3><a class="btn btn-sm" href="https://drive.google.com/file/d/1dTr_MnVhVpnKx4KzcKB6ZexXr4zCfcET/view?usp=drivesdk" target="_blank" rel="noopener">تحميل الآن</a></article>
+</div></div></section>
+
+<!-- المحاضرات -->
+<section class="block" id="v-lectures"><div class="wrap"><div class="sec-head"><h1>المحاضرات</h1><p class="sec-sub">ملفات المحاضرات والتسجيلات الصوتية المرفقة بالمنشورات.</p></div><div id="posts-lectures">
+<!-- ===== لإضافة منشور جديد: انسخ البطاقة التالية والصقها في أول القائمة وغيّر التاريخ والعنوان ورابط جوجل درايف =====
+<article class="post card"><div class="post-date">تاريخ الإضافة: ...</div><h3 class="post-title">عنوان المنشور</h3><a class="btn btn-sm" href="رابط جوجل درايف" target="_blank" rel="noopener">تحميل الآن</a></article>
+-->
+<div class="empty">لا توجد محاضرات منشورة بعد.</div>
+</div></div></section>
+</main>
+
+<footer class="site"><div class="wrap frow"><div>جميع الحقوق محفوظة © 2027<br>تم إنشاء الموقع بواسطة طالب بالكلية</div><a class="btn btn-ghost btn-sm" href="https://chat.whatsapp.com/KNwxIKW3RaRCRBfri3MIVu?s=cl&p=a&mlu=4&ilr=4&iam=2" target="_blank" rel="noopener">مجموعة واتساب</a></div></footer>
+</div>
+
+<script type="module">
+/* ============ Firebase (fb.js) ============ */
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signOut,GoogleAuthProvider,signInWithPopup,signInWithRedirect} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getDatabase,ref,push,onValue,update,remove,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyAbQMsUQNz3CKY7NLI_HaHoR6EgaePRQe8",authDomain:"students-e21f2.firebaseapp.com",databaseURL:"https://students-e21f2-default-rtdb.firebaseio.com",projectId:"students-e21f2",storageBucket:"students-e21f2.firebasestorage.app",messagingSenderId:"713037100201",appId:"1:713037100201:web:51a395f3ef400a9ff2a5b8",measurementId:"G-6343TWF8H9"};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app),rtdb=getDatabase(app);
+auth.languageCode="ar";
+
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+
+/* ============ التنقل بين الصفحات ============ */
+const PAGES={home:"الرئيسية",forum:"منتدى الطلاب",about:"عن الكلية",posts:"منشورات",lectures:"محاضرات"};
+function route(){
+  const h=location.hash.slice(1),page=PAGES[h]?h:"home";
+  document.body.dataset.mode=page;
+  Object.keys(PAGES).forEach(p=>$("v-"+p).hidden=p!==page);
+  document.querySelectorAll(".drawer nav a").forEach(a=>a.classList.toggle("current",a.dataset.page===page));
+  $("nav").checked=false;
+  document.title=PAGES[page]+" · طلاب الفرقة الأولى";
+  scrollTo(0,0);
+}
+addEventListener("hashchange",route);
+document.addEventListener("click",e=>{
+  if(e.target.closest(".drawer nav a,.brand,#v-home a[href^='#']"))$("nav").checked=false;
+  if(e.target.closest("[data-logout]"))signOut(auth);
+});
+
+/* ============ تسجيل الدخول (login.js) ============ */
+const msg=$("msg"),say=t=>msg.textContent=t||"";
+const ERR={"auth/operation-not-allowed":"طريقة الدخول هذه غير مفعّلة بعد.","auth/unauthorized-domain":"نطاق الموقع غير مصرّح به في إعدادات الدخول.","auth/popup-closed-by-user":"أُغلقت نافذة الدخول.","auth/too-many-requests":"محاولات كثيرة، حاول لاحقًا."};
+$("google").onclick=async()=>{
+  say("");const p=new GoogleAuthProvider();
+  try{await signInWithPopup(auth,p)}
+  catch(e){if(e.code==="auth/popup-blocked")return signInWithRedirect(auth,p);say(ERR[e.code]||"تعذّر تسجيل الدخول، حاول مرة أخرى.")}
+};
+
+/* ============ المنتدى (forum.js) ============ */
+const list=$("list"),base="forum/comments";
+let user=null,me="",pending=null,unsubForum=null;
+const ago=t=>t?new Date(t).toLocaleString("ar-EG",{dateStyle:"medium",timeStyle:"short"}):"";
+function postComment(text,parentId){
+  text=text.trim();if(!text||!user)return;
+  const d={uid:user.uid,name:me.slice(0,60),text:text.slice(0,1000),createdAt:serverTimestamp()};
+  if(parentId)d.parentId=parentId;
+  return push(ref(rtdb,base),d).catch(()=>alert("تعذّر الإرسال. تأكد من تفعيل القواعد والاتصال."));
+}
+$("send").onclick=async()=>{const t=$("txt");await postComment(t.value);t.value=""};
+function react(c,kind){
+  const other=kind==="likes"?"dislikes":"likes",mine=c[kind]&&c[kind][user.uid];
+  update(ref(rtdb),{[base+"/"+c.id+"/"+kind+"/"+user.uid]:mine?null:true,[base+"/"+c.id+"/"+other+"/"+user.uid]:null}).catch(()=>alert("تعذّر الحفظ."));
+}
+function node(c,replies){
+  const w=el("div","comment"),b=el("div","bubble"),n=el("div","nm",c.name);
+  n.append(el("span","tm",ago(c.createdAt)));b.append(n,el("p","",c.text));w.append(b);
+  const L=Object.keys(c.likes||{}).length,D=Object.keys(c.dislikes||{}).length,act=el("div","cact");
+  const bl=el("button",c.likes&&c.likes[user.uid]?"on":"","👍 "+L),bd=el("button",c.dislikes&&c.dislikes[user.uid]?"on":"","👎 "+D);
+  bl.onclick=()=>react(c,"likes");bd.onclick=()=>react(c,"dislikes");act.append(bl,bd);
+  const box=el("div","composer hidden"),ta=el("textarea");ta.placeholder="اكتب ردك…";
+  const ok=el("button","btn btn-dark btn-sm","إرسال");ok.onclick=async()=>{await postComment(ta.value,c.parentId||c.id);ta.value="";box.classList.add("hidden")};
+  box.append(ta,ok);
+  if(!c.parentId){const r=el("button","","رد");r.onclick=()=>{box.classList.toggle("hidden");ta.focus()};act.append(r)}
+  if(c.uid===user.uid){const x=el("button","","حذف");x.onclick=()=>{if(confirm("حذف هذا التعليق؟"))remove(ref(rtdb,base+"/"+c.id)).catch(()=>alert("لا يمكنك حذف هذا التعليق."))};act.append(x)}
+  w.append(act,box);
+  if(replies&&replies.length){const r=el("div","replies");replies.forEach(x=>r.append(node(x)));w.append(r)}
+  return w;
+}
+function renderForum(s){
+  const all=[];s.forEach(ch=>{all.push({id:ch.key,...ch.val()})});
+  const top=all.filter(c=>!c.parentId).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  list.replaceChildren();
+  if(!top.length)return list.append(el("div","empty","لا توجد تعليقات بعد. كن أول من يكتب."));
+  top.forEach(c=>list.append(node(c,all.filter(r=>r.parentId===c.id).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)))));
+}
+function startForum(){
+  unsubForum=onValue(ref(rtdb,base),s=>{
+    if(list.contains(document.activeElement)&&document.activeElement.tagName==="TEXTAREA"){pending=s;return}
+    renderForum(s);
+  },()=>{list.replaceChildren(el("div","empty","تعذّر تحميل المنتدى. تأكد من تفعيل القواعد."))});
+}
+list.addEventListener("focusout",()=>setTimeout(()=>{if(pending&&!list.contains(document.activeElement)){renderForum(pending);pending=null}},150));
+
+/* ============ حارس الدخول (guard.js) ============ */
+onAuthStateChanged(auth,u=>{
+  const root=document.documentElement;
+  if(u){
+    user=u;
+    me=u.displayName||("طالب"+(u.phoneNumber?" …"+u.phoneNumber.slice(-3):""));
+    root.dataset.auth="in";
+    route();startForum();
+  }else{
+    user=null;pending=null;
+    if(unsubForum){unsubForum();unsubForum=null}
+    list.replaceChildren();
+    history.replaceState(null,"",location.pathname);
+    root.dataset.auth="out";
+    document.title="تسجيل الدخول · طلاب الفرقة الأولى";
+  }
+});
+</script>
+</body></html>
