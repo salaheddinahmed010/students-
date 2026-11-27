@@ -19,12 +19,43 @@ function init() {
   return admin;
 }
 
-function broadcast({ title, body, url }) {
-  return init().messaging().send({
-    topic: TOPIC,
-    data: { title: String(title), body: String(body || ""), url: url || "/" },
-    webpush: { headers: { Urgency: "high", TTL: "86400" } },
-  });
+// true = كمان يبعت للمجموعة القديمة "all" عشان الأجهزة اللي لسه ماسجلتش نفسها بالطريقة الجديدة.
+// كل جهاز بيتسجل جديد بيتشال من المجموعة تلقائيًا، فمفيش تكرار. بعد ما الطلاب يفتحوا الموقع مرة خليها false.
+const LEGACY_TOPIC = true;
+
+const tokKey = (t) => crypto.createHash("sha1").update(t).digest("hex");
+
+async function broadcast({ title, body, url }) {
+  const ad = init();
+  const data = { title: String(title), body: String(body || ""), url: url || "/" };
+  // TTL 28 يوم: الرسالة تفضل محفوظة لحد ما الجهاز يرجع نت.
+  // Topic: الإشعار الجديد يستبدل القديم المنتظر، فيوصل آخر إشعار بس.
+  const webpush = { headers: { Urgency: "high", TTL: "2419200", Topic: "latest" } };
+
+  // إرسال مباشر لكل جهاز على حدة
+  const snap = await ad.database().ref("push_tokens").once("value");
+  const rows = [];
+  snap.forEach((c) => { const t = c.val() && c.val().t; if (typeof t === "string") rows.push({ k: c.key, t }); });
+
+  let sent = 0, failed = 0;
+  for (let i = 0; i < rows.length; i += 500) {
+    const chunk = rows.slice(i, i + 500);
+    const r = await ad.messaging().sendEachForMulticast({ tokens: chunk.map((x) => x.t), data, webpush });
+    const dead = {};
+    r.responses.forEach((x, n) => {
+      if (x.success) { sent++; return; }
+      failed++;
+      const code = x.error && x.error.code;
+      if (code === "messaging/registration-token-not-registered" || code === "messaging/invalid-registration-token")
+        dead["push_tokens/" + chunk[n].k] = null; // تنظيف الأجهزة اللي مسحت الموقع/الإذن
+    });
+    if (Object.keys(dead).length) await ad.database().ref().update(dead);
+  }
+
+  if (LEGACY_TOPIC) {
+    try { await ad.messaging().send({ topic: TOPIC, data, webpush }); } catch (e) { console.error("legacy topic", e); }
+  }
+  return { sent, failed };
 }
 
 const safeUrl = (u) => (typeof u === "string" && /^\/[^\/\\]*$/.test(u) ? u : "/");
@@ -62,7 +93,11 @@ module.exports = async (req, res) => {
       const token = b.token;
       if (typeof token !== "string" || token.length < 50 || token.length > 400)
         return res.status(400).json({ error: "bad token" });
-      await init().messaging().subscribeToTopic(token, TOPIC);
+      const ad = init();
+      // حفظ توكن الجهاز عشان الإرسال له مباشرة
+      await ad.database().ref("push_tokens/" + tokKey(token)).set({ t: token, at: Date.now() });
+      // شيل الجهاز من المجموعة القديمة (لو كان فيها) عشان ميوصلوش الإشعار مرتين
+      try { await ad.messaging().unsubscribeFromTopic(token, TOPIC); } catch (e) {}
       return res.json({ ok: true });
     }
 
