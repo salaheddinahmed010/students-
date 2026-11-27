@@ -25,6 +25,8 @@ messaging.onBackgroundMessage((payload) => {
     badge: "/icon-192.png",
     dir: "rtl",
     lang: "ar",
+    tag: "latest",
+    renotify: true,
     data: { url: d.url || "/" },
   });
 });
