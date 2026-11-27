@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلاب الفرقة الأولى</title>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><script>addEventListener("beforeinstallprompt",function(e){e.preventDefault();window.__ip=e;dispatchEvent(new Event("ip-ready"))});</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Geist:wght@400;500;600;700&display=swap">
 <style>
 :root{--canvas:#fff;--surface:#f6f6f6;--fg:#111;--muted:#5c5c5c;--accent2:#3d3d3d;--divider:#e2e2e2;--radius:16px;--green:#149343;
@@ -527,17 +527,21 @@ window.__notifyComment = async (text) => {
   } catch (e) {}
 };
 
-/* زر تفعيل الإشعارات في القائمة الجانبية */
-const foot = document.querySelector(".drawer-foot");
+/* زر تفعيل الإشعارات في الهيدر بجانب زر القائمة */
+const menuBtn = document.querySelector("header.site label.icon-btn");
 const btn = document.createElement("button");
-btn.className = "btn btn-dark btn-sm";
-btn.style.cssText = "width:100%;margin-bottom:10px";
-btn.textContent = "🔔 فعّل الإشعارات";
-if (foot) foot.prepend(btn);
+btn.type = "button";
+btn.className = "icon-btn";
+btn.style.cssText = "position:relative";
+btn.setAttribute("aria-label", "تفعيل الإشعارات");
+btn.title = "تفعيل الإشعارات";
+btn.innerHTML = '<span>🔔</span><i class="pdot" style="position:absolute;top:7px;inset-inline-end:7px;width:10px;height:10px;border-radius:50%;background:#e5484d;border:2px solid #fff"></i>';
+if (menuBtn) { menuBtn.style.marginInlineStart = "0"; menuBtn.parentNode.insertBefore(btn, document.getElementById("installBtn") || menuBtn); }
 
 const HINT_IOS = "الإشعارات على الآيفون بتشتغل بس لو ثبّتّ الموقع: من زر المشاركة اختار «إضافة إلى الشاشة الرئيسية» وافتحه من الأيقونة (iOS 16.4 أو أحدث).";
 
-function setOn(){ btn.textContent = "🔔 الإشعارات مفعّلة ✓"; btn.className = "btn btn-ghost btn-sm"; }
+function setOn(){ btn.dataset.on = "1"; btn.style.borderColor = "var(--green)"; btn.title = "الإشعارات مفعّلة"; const d = btn.querySelector(".pdot"); if (d) d.style.display = "none"; }
+function setOff(){ delete btn.dataset.on; btn.style.borderColor = ""; btn.title = "تفعيل الإشعارات"; const d = btn.querySelector(".pdot"); if (d) d.style.display = ""; }
 
 let messaging = null;
 async function supported(){
@@ -587,6 +591,7 @@ async function enable(){
     enable().catch(() => {}); // تحديث التوكن بهدوء
   }
   btn.onclick = async () => {
+    if (btn.dataset.on) { alert("الإشعارات مفعّلة ✓ هتوصلك إشعارات المنتدى والمنشورات والمحاضرات الجديدة."); return; }
     if (Notification.permission === "denied") {
       alert("الإشعارات متقفلة لهذا الموقع. فعّلها من إعدادات المتصفح ← إعدادات الموقع ← الإشعارات.");
       return;
@@ -594,13 +599,41 @@ async function enable(){
     btn.disabled = true;
     try {
       if (await enable()) setOn();
-      else btn.textContent = "🔔 فعّل الإشعارات";
+      else setOff();
     } catch (e) {
-      alert("حصلت مشكلة في التفعيل، جرب تاني.");
+      alert("حصلت مشكلة في التفعيل: "+((e&&(e.code||e.message))||e));
     }
     btn.disabled = false;
   };
 })();
 
+</script>
+<script>
+/* زر تثبيت التطبيق في الهيدر بجانب زر الإشعارات */
+(function(){
+  var menu=document.querySelector("header.site label.icon-btn");if(!menu)return;
+  if(matchMedia("(display-mode: standalone)").matches||navigator.standalone)return;
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var b=document.createElement("button");
+  b.type="button";b.id="installBtn";b.className="icon-btn";
+  b.style.cssText="margin-inline-start:0;display:none";
+  b.setAttribute("aria-label","تثبيت التطبيق");b.title="تثبيت التطبيق";b.textContent="📲";
+  menu.parentNode.insertBefore(b,menu);
+  function show(){b.style.display=""}
+  function hide(){b.style.display="none";window.__ip=null}
+  if(window.__ip||ios)show();
+  addEventListener("ip-ready",show);
+  addEventListener("appinstalled",hide);
+  matchMedia("(display-mode: standalone)").addEventListener&&matchMedia("(display-mode: standalone)").addEventListener("change",function(e){if(e.matches)hide()});
+  b.onclick=async function(){
+    var e=window.__ip;
+    if(e){
+      e.prompt();window.__ip=null;
+      try{var r=await e.userChoice;if(r&&r.outcome==="accepted")hide()}catch(x){}
+      return;
+    }
+    alert(ios?"للتثبيت على الآيفون: اضغط زر المشاركة في سفاري، ثم اختار «إضافة إلى الشاشة الرئيسية».":"للتثبيت: اضغط على قائمة المتصفح ⋮ ثم اختار «تثبيت التطبيق».");
+  };
+})();
 </script>
 </body></html>
