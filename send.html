@@ -33,7 +33,8 @@ $("go").onclick=async()=>{
   $("go").disabled=true;
   try{
     const res=await fetch("/api/push?a=send",{method:"POST",headers:{"Content-Type":"application/json","x-admin-secret":$("pw").value},body:JSON.stringify({title:$("t").value,body:$("b").value,url:$("u").value})});
-    r.textContent=res.ok?"✅ اتبعت":(res.status===401?"❌ كلمة السر غلط":"❌ فشل الإرسال");
+    let j={};try{j=await res.json()}catch(_){}
+    r.textContent=res.ok?("✅ اتبعت — أجهزة: "+(j.devices||0)+" | وصل: "+(j.sent||0)+" | فشل: "+(j.failed||0)+" | المجموعة القديمة: "+(j.legacy||"-")+(j.firstErr?" | خطأ: "+j.firstErr:"")):(res.status===401?"❌ كلمة السر غلط":"❌ فشل الإرسال: "+(j.error||res.status));
     if(res.ok){$("t").value="";$("b").value=""}
   }catch(e){r.textContent="❌ مشكلة اتصال"}
   $("go").disabled=false;
