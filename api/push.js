@@ -1,10 +1,11 @@
 // ملف واحد للإشعارات: ?a=subscribe  |  ?a=notify  |  ?a=send
 const crypto = require("crypto");
-const admin = require("firebase-admin");
+let admin = null;
 
 const TOPIC = "all";
 
 function init() {
+  if (!admin) admin = require("firebase-admin");
   if (!admin.apps.length) {
     const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
     if (!raw) throw new Error("FIREBASE_SERVICE_ACCOUNT is missing");
@@ -34,6 +35,24 @@ function same(a, b) {
 }
 
 module.exports = async (req, res) => {
+  // فحص سريع: افتح /api/push في المتصفح يظهر لك حالة الإعدادات
+  if (req.method === "GET") {
+    const out = {
+      ok: true,
+      node: process.version,
+      hasServiceAccount: !!process.env.FIREBASE_SERVICE_ACCOUNT,
+      hasAdminSecret: !!process.env.ADMIN_SECRET,
+    };
+    try { require("firebase-admin"); out.firebaseAdmin = "installed"; }
+    catch (e) { out.firebaseAdmin = "MISSING: " + String(e.message).slice(0, 120); }
+    try {
+      const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "");
+      out.serviceAccount = "valid JSON, project=" + sa.project_id;
+    } catch (e) { out.serviceAccount = "INVALID: " + String(e.message).slice(0, 80); }
+    try { init().messaging(); out.init = "ok"; }
+    catch (e) { out.init = "FAILED: " + String(e.message).slice(0, 160); }
+    return res.status(200).json(out);
+  }
   if (req.method !== "POST") return res.status(405).end();
   const a = req.query && req.query.a;
   const b = req.body || {};
