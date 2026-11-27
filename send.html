@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>إرسال إشعار</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui,"Cairo",sans-serif;background:#f6f6f6;margin:0;padding:20px;color:#111}
+.box{max-width:460px;margin:0 auto;background:#fff;border:1px solid #e2e2e2;border-radius:16px;padding:22px}
+h1{font-size:22px;margin:0 0 16px}label{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d6d6d6;border-radius:12px;font:inherit;background:#fff}
+textarea{min-height:90px;resize:vertical}.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid #d6d6d6;background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.go{margin-top:18px;width:100%;height:50px;border:0;border-radius:14px;background:#111;color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.go:disabled{opacity:.5}#r{margin-top:14px;text-align:center;font-weight:700}
+</style></head><body><div class="box">
+<h1>🔔 إرسال إشعار للطلاب</h1>
+<label>كلمة السر</label><input id="pw" type="password" autocomplete="current-password">
+<label>نوع الإشعار (اختياري)</label>
+<div class="chips">
+<button class="chip" data-t="📢 منشور جديد" data-u="/#posts">منشور جديد</button>
+<button class="chip" data-t="📚 محاضرة جديدة" data-u="/#lectures">محاضرة جديدة</button>
+<button class="chip" data-t="✨ تحديث جديد للموقع" data-u="/">تحديث</button>
+</div>
+<label>العنوان</label><input id="t" maxlength="80">
+<label>النص</label><textarea id="b" maxlength="200"></textarea>
+<label>يفتح على صفحة</label>
+<select id="u"><option value="/">الرئيسية</option><option value="/#posts">المنشورات</option><option value="/#lectures">المحاضرات</option><option value="/#forum">المنتدى</option></select>
+<button class="go" id="go">إرسال لكل الطلاب</button><div id="r"></div>
+</div><script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{$("t").value=c.dataset.t;$("u").value=c.dataset.u});
+$("go").onclick=async()=>{
+  const r=$("r");r.textContent="";
+  if(!$("pw").value||!$("t").value.trim()){r.textContent="اكتب كلمة السر والعنوان";return}
+  if(!confirm("تبعت الإشعار لكل الطلاب؟"))return;
+  $("go").disabled=true;
+  try{
+    const res=await fetch("/api/push?a=send",{method:"POST",headers:{"Content-Type":"application/json","x-admin-secret":$("pw").value},body:JSON.stringify({title:$("t").value,body:$("b").value,url:$("u").value})});
+    r.textContent=res.ok?"✅ اتبعت":(res.status===401?"❌ كلمة السر غلط":"❌ فشل الإرسال");
+    if(res.ok){$("t").value="";$("b").value=""}
+  }catch(e){r.textContent="❌ مشكلة اتصال"}
+  $("go").disabled=false;
+};
+</script></body></html>
